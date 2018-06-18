@@ -1,0 +1,726 @@
+<!doctype html>
+<html lang="en_US">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=PT+Sans+Narrow:700&text=tilo" rel="stylesheet">
+
+    <link rel="apple-touch-icon-precomposed" sizes="57x57" href="favicomatic/apple-touch-icon-57x57.png?v=1" />
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="favicomatic/apple-touch-icon-114x114.png?v=1" />
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="favicomatic/apple-touch-icon-72x72.png?v=1" />
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="favicomatic/apple-touch-icon-144x144.png?v=1" />
+    <link rel="apple-touch-icon-precomposed" sizes="60x60" href="favicomatic/apple-touch-icon-60x60.png?v=1" />
+    <link rel="apple-touch-icon-precomposed" sizes="120x120" href="favicomatic/apple-touch-icon-120x120.png?v=1" />
+    <link rel="apple-touch-icon-precomposed" sizes="76x76" href="favicomatic/apple-touch-icon-76x76.png?v=1" />
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="favicomatic/apple-touch-icon-152x152.png?v=1" />
+    <link rel="icon" type="image/png" href="favicomatic/favicon-196x196.png?v=1" sizes="196x196" />
+    <link rel="icon" type="image/png" href="favicomatic/favicon-96x96.png?v=1" sizes="96x96" />
+    <link rel="icon" type="image/png" href="favicomatic/favicon-32x32.png?v=1" sizes="32x32" />
+    <link rel="icon" type="image/png" href="favicomatic/favicon-16x16.png?v=1" sizes="16x16" />
+    <link rel="icon" type="image/png" href="favicomatic/favicon-128.png?v=1" sizes="128x128" />
+    <meta name="application-name" content="&nbsp;"/>
+    <meta name="msapplication-TileColor" content="#FFFFFF" />
+    <meta name="msapplication-TileImage" content="favicomatic/mstile-144x144.png?v=1" />
+    <meta name="msapplication-square70x70logo" content="favicomatic/mstile-70x70.png?v=1" />
+    <meta name="msapplication-square150x150logo" content="favicomatic/mstile-150x150.png?v=1" />
+    <meta name="msapplication-wide310x150logo" content="favicomatic/mstile-310x150.png?v=1" />
+    <meta name="msapplication-square310x310logo" content="favicomatic/mstile-310x310.png?v=1" />
+
+
+    <title>tilo - elsbth.se</title>
+
+    <style>
+        :root { 
+            --main-font: 'Open Sans Condensed', sans-serif; 
+            --color-placeholder: #aaa;
+            --color-tilo: #1d98b3;
+        }
+        body { font-family: var(--main-font); margin: 0 20px; }
+        .flex-wrapper { display: flex; }
+        .tilo { margin-top: 20px; }
+        .to-do { margin-left: 40px; width: 400px; flex: 1; }
+        .items { margin: 0 0 20px; padding: 6px 10px 10px; display: inline-block; background: #fbf8e3; }
+        .items li { list-style: none; padding: 6px 0 0; border-bottom: 1px solid #e2d6c8; }
+        .items li span { display: inline-block; margin: 0 10px; }
+        .items li span:empty { display: none; }
+        .items a { text-decoration: none; color: #000; }
+        .items a:hover { color: var(--color-tilo); }
+        .items a:before { content: '\1F517'; text-decoration: none; margin: 0 -8px 0 -5px; font-size: 10px; line-height: 19px; }
+        .item--checked, .item--checked * { cursor: default; opacity: 0.6; }
+        input { font-size: 16px; border: none; border-bottom: 1px solid #e2d6c8; padding: 0 2px 0 0; font-family: var(--main-font); font-weight: bold; }
+        input:invalid { border-right: 2px solid #f91616 !important; padding-right: 0; }
+        input:focus { border-bottom-color: #000; outline: none; }
+        input.update { position: relative; bottom: -1px; vertical-align: bottom; width: 70px; }
+        input.update[readonly]:focus { border-bottom-color: #ccc; outline: none; }
+        .active:not(:empty) + .update { border-right: 2px solid green; padding-right: 0; }
+        h1 { font-family: 'PT Sans Narrow', sans-serif; margin: 0 -20px; padding: 10px 20px 0; background: var(--color-tilo); color: #fff; border-bottom: 10px solid #fff; position: relative; display: flex; justify-content: space-between; align-items: baseline; }
+        h1::after { content: ''; width: 100%; height: 1px; background: var(--color-tilo); position: absolute; bottom: -10px; left: 0; }
+        h1 span { font-size: 14px; font-family: var(--main-font); }
+        h2 { margin-top: 60px; }
+        .js-item-to-clone { display: none; }
+        .js-item-to-clone:hover, .js-item-to-clone:hover * { opacity: 1; }
+        .label { width: 90px; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; vertical-align: bottom; }
+        .count, .total-amount { color: #982984; }
+        .logged { display: none; }
+        .logged + .logged-label { position: relative; cursor: pointer; text-indent: 99px; width: 16px; display: inline-block; vertical-align: bottom; overflow: hidden; }
+        .logged + .logged-label::before, .logged + .logged-label::after { position: absolute; top: 4px; left: 0; width: 12px; height: 12px; display: block; border-radius: 4px; }
+        .logged + .logged-label::before { content: ''; background: #fff; border: 1px solid #666; }
+        .logged:checked + .logged-label::after { content: '✓'; top: 2px; left: 3px; font-size: 0.8em; text-indent: 0; }
+        .logged + .logged-label:hover::before { border-color: #000; box-shadow: 0 0 1px 0px inset #bbb; }
+        .active { color: green; font-weight: bold; position: relative; width: 35px; }
+        .active:after { content: ''; position: absolute; right: -12px; border: 5px solid transparent; height: 0; width: 0; border-left-color: inherit; border-left-width: 7px; top: 7px; border-right-width: 0; }
+        .prev { color: #777; word-spacing: 5px; }
+        .input--uppercase { text-transform: uppercase; }
+        .total-amount { font-size: 18px; font-weight: bold; margin: 0 10px 0 7px; }
+        .total-amount-logged { font-size: 18px; }
+        .logo--big { border-bottom: 1px solid var(--color-tilo); display: block; margin: 100px auto 40px; }
+        .settings { max-width: 500px; }
+        .settings code:first-child { color: var(--color-tilo); font-size: 14px; }
+        #message { background: #f7f7f7; color: #999; padding: 2px 10px; max-width: 400px; min-height: 23px; font-family: monospace; line-height: 1.8em; }
+
+        ::-webkit-input-placeholder { /* Chrome/Opera/Safari */ font-family: var(--main-font); color: var(--color-placeholder); padding-left: 3px; font-weight: normal; }
+        ::-moz-placeholder { /* Firefox 19+ */ font-family: var(--main-font); var(--color-placeholder); padding-left: 3px; font-weight: normal; }
+        :-ms-input-placeholder { /* IE 10+ */ font-family: var(--main-font); var(--color-placeholder); padding-left: 3px; font-weight: normal; }
+        :-moz-placeholder { /* Firefox 18- */ font-family: var(--main-font); var(--color-placeholder); padding-left: 3px; font-weight: normal; }
+    </style>
+
+</head>
+<body>
+<h1 class="js-toggle">tilo <span>elsbth.se</span></h1>
+<div class="flex-wrapper">
+    <div id="tilo" class="tilo">
+        <div id="message"></div>
+        <p>Total: <span class="total-amount">0:00</span> <span class="total-amount-logged">0:00</span></p>
+        <ul id="itemsList" class="items">
+            <li class="item js-item-to-clone">
+                <span class="label">FOO-16</span>
+                <span class="count">0:00</span>
+                <input type="checkbox" id="logged-0" class="logged js-logged" /><label for="logged-0" class="logged-label">logged</label>
+                <span class="prev">8:00-9:00</span>
+                <span class="active">9:15-</span>
+                <input class="update" pattern="([01]?[0-9]|2[0-3]):[0-5][0-9][-]?(([01]?[0-9]|2[0-3]):[0-5][0-9])?" autocomplete="off" readonly />
+            </li>
+        </ul>
+
+        <form method="post" id="new">
+            <input name="label" placeholder="Label" class="label input--uppercase" autocomplete="off" />
+            <input name="time" placeholder="00:00-23:59" pattern="([01]?[0-9]|2[0-3]):[0-5][0-9][-]?(([01]?[0-9]|2[0-3]):[0-5][0-9])?" autocomplete="off" />
+            <button type="submit">Add</button></form>
+    
+        <p><button type="button" id="clear">Clear</button></p>
+        <p><button type="button" id="toggle">Toggle</button></p>
+    </div>
+
+    <div class="to-do js-toggle">
+        <h2>Settings:</h2>
+        <ul class="settings">
+            <li><code>preventDoubleActive</code> (1/0) - Warning if want to add new active and there already is one active</li>
+            <li><code>linkLabels</code> (1/0) - Link the label to the ticket. Use together with <code>linkTemplate</code> and <code>labelsToLink</code></li>
+            <li><code>linkTemplate</code> (url with placeholder) - URL to the ticket, placeholder <code>{label}</code> for the ticket number</li>
+            <li><code>labelsToLink</code> (oblejct with key: value pairs) - the ticket's project identifier. Key could be an abbreviation, but is the one used for the label in tilo. Value should be the correct project identifier, it's used for the actual link. </li>
+        </ul>
+    </div>
+</div>
+
+<img src="favicomatic/mstile-310x310.png" alt="Logo tilo" width="155" height="155" class="logo--big js-toggle" />
+
+    <script src="http://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+
+    <script type="text/javascript">
+        TILO = {
+            $wrapper: $('#tilo'),
+            $clearBtn: $('#clear'),
+            $itemsList: $('#itemsList'),
+            itemSelector: '.item',
+            cloneClass: 'js-item-to-clone',
+            cloneSelector: '.js-item-to-clone',
+            checkedClass: 'item--checked',
+            $activeItem: null,
+            defaultItems: {
+                'EMAIL': 'Email'
+            },
+            settings : {
+                preventDoubleActive: 1,
+                linkLabels: 1,
+                linkTemplate: 'https://jira.com/browse/{label}',
+                labelsToLink: {
+                    'FOO': 'FOOD',
+                    'BAR': 'BARBECUE'
+                }
+            },
+
+            init: function() {
+                var self = this,
+                    toggle = localStorage.getItem('tilo-toggle');
+
+                if (toggle !== null) {
+                    $('.js-toggle').toggle();
+                }
+
+                self.loadSavedTimeIfAny();
+
+                //Add new item
+                self.$wrapper.find('form').submit(function(e) {
+                    e.preventDefault();
+
+                    var $form = $(this);
+                        serializedData = $form.serializeArray(),
+                        data = self.formatFormData(serializedData);
+
+                    if (data.label == '' || data.time == '') {
+                        self.message('invalid');
+                    } else if ($('.item .label:contains(' + data.label.toUpperCase() + ')').length) {
+                        self.message('"' + data.label + '"' + ' already exists');
+                        //TODO: Add time to the update input for the item having the same label, focus the input
+                    } else {
+                        self.addItem(data, 'new');
+                    }
+                });
+
+                //Add time to existing item on Enter press
+                self.$wrapper.on('keyup', '.update', function(e) {
+                    e.preventDefault();
+                    if (e.keyCode === 13) {
+                        if ($(this).is(':invalid')) {
+                            self.message('invalid');
+                        } else {
+                            var val = $(this).val();
+
+                            if (val) {
+                                self.$activeItem = $(e.target).closest(self.itemSelector);
+
+                                self.addTime(val);
+
+                                self.$activeItem = null;
+                            }                            
+                        }
+                    }
+                });
+
+                //When item is checked as logged (or unchecked as not logged)
+                self.$wrapper.on('change', '.js-logged', function(e) {
+                    var isChecked = $(this).is(':checked');
+
+                    self.$activeItem = $(e.target).closest(self.itemSelector);
+
+                    self.$activeItem.toggleClass(self.checkedClass, isChecked);
+
+                    self.saveToLocalStorage('all');
+
+                    self.countTotalLogged();
+
+                    self.$activeItem = null;
+                });
+
+                //Clear the saved data
+                self.$clearBtn.click(function() {
+                    var clear = confirm('Clear all data?');
+
+                    if (clear) {                        
+                        $(self.itemSelector + ':not(' + self.cloneSelector + ')').remove();
+                        self.saveToLocalStorage('clear');
+                        self.resetTotal();
+                        self.resetTotalLogged();
+                    }
+                });
+
+                //Clear the saved data
+                $('#toggle').click(function() {
+                    $('.js-toggle').toggle();
+                    var isVisible = $('.js-toggle').first().is(':visible');
+                    localStorage.setItem('tilo-toggle', isVisible);
+                });
+            },
+
+            formatFormData: function(data) {
+                var formattedData = {};
+
+                $.each(data, function(i, field) {
+                    formattedData[field.name] = field.value;
+                });
+
+                return formattedData;
+            },
+
+            loadSavedTimeIfAny: function() {
+                var self = this,
+                    currentStorage = localStorage.getItem('tilo');
+
+                if (currentStorage) {
+                    var times = window.JSON.parse(currentStorage),
+                    count = Object.keys(times).length;
+
+                    for (var i = 0; i < count; i++) {
+                        data = times[i];
+                        self.addItem(data, 'load');
+                    }
+                }
+            },
+
+            saveToLocalStorage: function(action) {
+                var self = this,
+                    $items = $(self.itemSelector + ':not(' + self.cloneSelector + ')'),
+                    newData = {},
+                    newStorage = '',
+                    currentStorage = localStorage.getItem('tilo'),
+                    currentData = (currentStorage) ? window.JSON.parse(currentStorage) : {},
+                    count = Object.keys(currentData).length;
+
+                switch (action) {
+                    case 'all':
+
+                        $.each($items, function(i) {
+                            var newItem = {},
+                                $item = $(this);
+
+                            newItem['label'] = $item.find('.label').text();
+                            newItem['logged'] = $item.find('.js-logged:checked').length;
+                            newItem['prev'] = $item.find('.prev').text();
+                            newItem['active'] = $item.find('.active').text();
+
+                            newData[i] = newItem;
+                        });
+
+                        newStorage = window.JSON.stringify(newData);
+                        localStorage.setItem('tilo', newStorage);
+                        
+                        self.message('saved/loaded');
+                        break;
+
+                    case 'clear':
+                        localStorage.setItem('tilo', '');
+                        self.message('cleared');
+                        break;
+                }
+            },
+
+            addItem: function(data, action) {
+                var dataToItem = { 
+                        'label': '',
+                        'prev': '',
+                        'active': ''
+                    },
+                    $newItem = this.$itemsList.find(this.cloneSelector).clone();
+
+                if (action == 'load') {
+                    dataToItem = data;
+                } else {
+                    var time = data.time,
+                        type = this.checkType(time),
+                        $alreadyActive = this.alreadyActive();
+                        //endActiveIfNewActive
+
+                    if (type == 'start' && this.settings.preventDoubleActive && $alreadyActive.length) {
+                        //TODO
+                        //var endCurrentActive = confirm($alreadyActive.find('label').text() + ' is already active. End it?'); 
+
+                        this.message('other item already active');
+                        $alreadyActive.next('.update').first().focus();
+                        return;
+                    }
+
+                    dataToItem.label = data.label;
+
+                    switch (type) {
+                        case 'start':
+                            dataToItem.active = time;
+                            break;
+
+                        case 'interval':
+                            //Both start and end time
+                            var times = time.split('-'),
+                                interval = this.calculateInterval(times[0], times[1]);
+
+                            dataToItem.prev = time;
+                            break;
+
+                        case 'amount':
+                            dataToItem.prev = time;
+                            break;
+                    }
+                }
+
+                this.addMarkupForNewItem(dataToItem);
+                this.clearAddForm();
+            },
+
+            alreadyActive: function() {
+                return $(this.itemSelector + ':not(' + this.cloneSelector + ')').find('.active:not(:empty)');
+            },
+
+            addMarkupForNewItem: function(data) {
+                var $newItem = this.$itemsList.find(this.cloneSelector).clone(),
+                    $label = $newItem.find('.label'),
+                    formattedLabel = data.label.trim().toUpperCase(),
+                    count = this.$itemsList.find(this.itemSelector).length,
+                    loggedId = 'logged-' + count;
+
+                $newItem.removeClass(this.cloneClass);
+                $newItem.find('input').prop('readonly', false);
+
+                $label.text(formattedLabel).attr('title', formattedLabel);
+
+                if (this.settings.linkLabels) {
+                    var link = this.getLinkFromLabel(formattedLabel);
+                    if (link) {
+                        $label.wrap('<a href="' + link +'"></a>');
+                    }
+                }
+
+                $newItem.find('.logged').attr('id', loggedId).prop('checked', data.logged);
+                $newItem.find('.logged-label').attr('for', loggedId);
+                if (data.logged) {
+                    $newItem.addClass(this.checkedClass);
+                }
+
+                $newItem.find('.prev').text(data.prev);
+                $newItem.find('.active').text(data.active);
+
+                this.$itemsList.append($newItem);
+
+                this.$activeItem = $newItem;
+
+                this.calculateAmountForItem();
+                this.countTotal();
+                this.saveToLocalStorage('all');
+
+                if (data.active) {
+                    $newItem.find('.update').focus();
+                }
+            },
+
+            addTime: function(timeToAdd) {
+                var $item = this.$activeItem,
+                    $activeWrapper = $item.find('.active'),
+                    $prevWrapper = $item.find('.prev'),
+                    timeString = $prevWrapper.text(),
+                    type = this.checkType(timeToAdd),
+                    timeIsAdded = true;
+
+                switch (type) {
+                    case 'start':
+                        var $alreadyActive = this.alreadyActive();
+
+                        if (this.settings.preventDoubleActive && $alreadyActive.length) {
+                            this.message('an item is already active');
+                            $alreadyActive.next('.update').first().focus();
+                            return false;
+                        }
+
+                        $activeWrapper.text(timeToAdd);
+                        break;
+
+                    case 'end':
+                        var startTime = $activeWrapper.text(),
+                            isNegative = this.checkIfNegative(startTime.replace('-', ''), timeToAdd);;
+
+                        if (isNegative) {
+                            this.message('Cannot end time before it even started.');
+                            timeIsAdded = false;
+                            break;
+                        }
+
+                        $activeWrapper.text('');
+                        timeString = timeString + ' ' + startTime + timeToAdd;
+                        break;
+
+                    case 'interval':
+                        var t = timeToAdd.split('-'),
+                            isNegative = this.checkIfNegative(t[0], t[1]);
+
+                        if (isNegative) {
+                            this.message('Cannot end time before it even started.');
+                            timeIsAdded = false;
+                            break;
+                        }
+
+                        timeString = timeString + ' ' + timeToAdd;
+                        break;
+
+                    case 'amount':
+                        timeString = timeString + ' ' + timeToAdd;
+                        break;
+                }
+
+                if (timeIsAdded) {
+                    $activeWrapper.next('.update').val('');                
+                    $prevWrapper.text(timeString.trim());
+                    
+                    this.calculateAmountForItem();   
+                }
+            },
+
+            calculateAmountForItem: function() {
+                var timeString = this.$activeItem.find('.prev').text(),
+                    timeCollection = timeString.split(' '),
+                    hours = 0,
+                    minutes = 0;
+
+                //Iterate over timeCollection
+                for (var i = 0; i < timeCollection.length; i++) {
+                    var time = timeCollection[i],
+                        type = this.checkType(timeCollection[i]);
+
+                    if (!time) {
+                        continue;
+                    }
+
+                    switch (type) {
+                        case 'start':
+                            //Ignore
+                            break;
+
+                        case 'interval':
+                            //Calculate amount
+                            var t = time.split('-'),
+                                amount = this.calculateInterval(t[0], t[1]);
+
+                            hours += parseInt(amount[0], 10);
+                            minutes += parseInt(amount[1], 10);
+                            break;
+
+                        case 'end':
+                            //If all are calculated this will happen for prev amount while active
+                        case 'amount':
+                            var t = time.split(':');
+
+                            hours += parseInt(t[0], 10);
+                            minutes += parseInt(t[1], 10);
+                            break;
+                    }
+                }
+
+                var realTime = this.findTheHoursWithinTheMinutes(minutes);
+
+                hours = hours + realTime[0];
+                minutes = this.zerofill(realTime[1]);
+
+                this.$activeItem.find('.count').text(hours + ':' + minutes);
+
+                this.countTotal();
+                this.countTotalLogged();
+            },
+
+            countTotal: function() {
+                var $allCounts = $('.count'),
+                    time = this.calculateTotalFromObjects($allCounts);
+                    hours = time[0],
+                    minutes = time[1];
+
+                this.updateTotalText(hours + ':' + minutes);
+
+                this.saveToLocalStorage('all');
+            },
+
+            updateTotalText: function(text) {
+                $('.total-amount').text(text);
+            },
+
+            resetTotal: function() {
+                this.updateTotalText('0:00');
+            },
+
+            countTotalLogged: function() {
+                var $allCounts = $('.js-logged:checked').closest(this.itemSelector).find('.count'),
+                    time = this.calculateTotalFromObjects($allCounts);
+                    hours = time[0],
+                    minutes = time[1];
+
+                this.updateTotalLoggedText(hours + ':' + minutes);
+            },
+
+            updateTotalLoggedText: function(text) {
+                $('.total-amount-logged').text(text);
+            },
+
+            resetTotalLogged: function() {
+                this.updateTotalLoggedText('0:00');
+            },
+
+            calculateTotalFromObjects: function($allCounts) {
+                var hours = 0,
+                    minutes = 0;
+
+                $.each($allCounts, function() {
+                    var t = $(this).text().split(':');
+
+                    hours += parseInt(t[0], 10);
+                    minutes += parseInt(t[1], 10);
+                });
+
+
+                var realTime = this.findTheHoursWithinTheMinutes(minutes);
+
+                hours = hours + realTime[0];
+                minutes = this.zerofill(realTime[1]);
+
+                return { 0: hours, 1: minutes};
+            },
+
+            findTheHoursWithinTheMinutes: function(allMinutes) {
+                var hours = Math.floor(allMinutes / 60),
+                    minutes = allMinutes % 60;
+
+                return { 0: hours, 1: minutes };
+            },
+
+            checkType: function(time) {
+                //TODO: Add warnings:
+                //      - If new active time is added to already active
+                //      - If amount is > 8:00
+
+                if (time.indexOf('-') > 0) {
+                    if (time.length > 6) {
+                        return 'interval';
+                    } else {
+                        return 'start';
+                    }
+                } else if (this.$activeItem && this.$activeItem.find('.active').text().length) {
+                    return 'end';
+                }
+
+                return 'amount';
+            },
+
+            checkIfNegative: function(start, end) {
+                var amount = this.calculateInterval(start, end);
+
+                if (amount[0] < 0 || amount[1] < 0) {
+                    return true;
+                }
+
+                return false;
+            },
+
+            calculateInterval: function(start, end) {
+                var t1 = start.split(':'), 
+                    t2 = end.split(':');
+
+                var d1 = new Date(1987, 04, 16, t1[0], t1[1]).getTime(),
+                    d2 = new Date(1987, 04, 16, t2[0], t2[1]).getTime();
+
+                var diff = (d2 - d1) / (1000 * 60);
+
+                var hours = Math.floor(diff / 60),
+                    minutes = diff % 60;
+
+                /* Don't return minutes as a string if minutes will be used for calculations afterwards
+                if (minutes.length == 1 || minutes < 10) {
+                    minutes = '0' + minutes;
+                }
+                */
+
+                return { 0: hours, 1: minutes };
+            },
+
+            getLinkFromLabel(label) {
+                var labelParts = label.split(/[\s-]+/),
+                    shouldLink = (labelParts[0] in this.settings.labelsToLink && Number.isInteger(parseInt(labelParts[1])) && label.indexOf(labelParts[0] + '-') == 0);
+
+                if (shouldLink) {
+                    var identifier = this.settings.labelsToLink[labelParts[0]] + '-' + labelParts[1],
+                        link = this.settings.linkTemplate.replace('{label}', identifier);
+
+                    return link;
+                }
+
+                return null;
+            },  
+
+            zerofill: function(number) {
+                return (parseInt(number, 10) < 10) ? '0' + number : number;
+            },
+
+            clearAddForm: function() {
+                this.$wrapper.find('form input').val('');
+            },
+
+            message: function(text) {
+                $('#message').text(text);
+
+                setTimeout(function() { $('#message').text('') }, 3000);
+            }
+        };
+
+        TILO.init();
+
+
+if (!window.localStorage) {
+  Object.defineProperty(window, "localStorage", new (function () {
+    var aKeys = [], oStorage = {};
+    Object.defineProperty(oStorage, "getItem", {
+      value: function (sKey) { return sKey ? this[sKey] : null; },
+      writable: false,
+      configurable: false,
+      enumerable: false
+    });
+    Object.defineProperty(oStorage, "key", {
+      value: function (nKeyId) { return aKeys[nKeyId]; },
+      writable: false,
+      configurable: false,
+      enumerable: false
+    });
+    Object.defineProperty(oStorage, "setItem", {
+      value: function (sKey, sValue) {
+        if(!sKey) { return; }
+        document.cookie = escape(sKey) + "=" + escape(sValue) + "; expires=Tue, 19 Jan 2038 03:14:07 GMT; path=/";
+      },
+      writable: false,
+      configurable: false,
+      enumerable: false
+    });
+    Object.defineProperty(oStorage, "length", {
+      get: function () { return aKeys.length; },
+      configurable: false,
+      enumerable: false
+    });
+    Object.defineProperty(oStorage, "removeItem", {
+      value: function (sKey) {
+        if(!sKey) { return; }
+        document.cookie = escape(sKey) + "=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/";
+      },
+      writable: false,
+      configurable: false,
+      enumerable: false
+    });    
+    Object.defineProperty(oStorage, "clear", {
+      value: function () {
+        if(!aKeys.length) { return; }
+        for (var sKey in aKeys) {
+          document.cookie = escape(sKey) + "=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/";
+        }
+      },
+      writable: false,
+      configurable: false,
+      enumerable: false
+    });
+    this.get = function () {
+      var iThisIndx;
+      for (var sKey in oStorage) {
+        iThisIndx = aKeys.indexOf(sKey);
+        if (iThisIndx === -1) { oStorage.setItem(sKey, oStorage[sKey]); }
+        else { aKeys.splice(iThisIndx, 1); }
+        delete oStorage[sKey];
+      }
+      for (aKeys; aKeys.length > 0; aKeys.splice(0, 1)) { oStorage.removeItem(aKeys[0]); }
+      for (var aCouple, iKey, nIdx = 0, aCouples = document.cookie.split(/\s*;\s*/); nIdx < aCouples.length; nIdx++) {
+        aCouple = aCouples[nIdx].split(/\s*=\s*/);
+        if (aCouple.length > 1) {
+          oStorage[iKey = unescape(aCouple[0])] = unescape(aCouple[1]);
+          aKeys.push(iKey);
+        }
+      }
+      return oStorage;
+    };
+    this.configurable = false;
+    this.enumerable = true;
+  })());
+}
+
+
+    </script>
+
+</body>
+</html>
