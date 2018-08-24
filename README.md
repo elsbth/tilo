@@ -8,6 +8,9 @@
 - `linkTemplate` (url with placeholder) - URL to the ticket, placeholder `{label}` for the ticket number
 - `labelsToLink` (oblejct with key: value pairs) - the ticket's project identifier. Key could be an abbreviation, but is the one used for the label in tilo. Value should be the correct project identifier, it's used for the actual link. 
 
+## User instructions:
+- Type "-" for an active item to reset the active time
+
 ## Bugs found:
 
 - ...
@@ -15,8 +18,9 @@
 
 ## ToDo:
 
-- Delete active entry when end time is the same as the start time. Confirm before deleting?
+- Hover item changes background or something
 - Smaller favicons should only include the o✓
+- Preliminary total time: If there is an active item, show the total if ended at current time
 - List default items - add to tilo with a click
 - Button to flash current total time when an item is still active. Round up to 5
 - Format input: no, uppercase, lowercase
