@@ -153,7 +153,7 @@
             defaultItems: {
                 'EMAIL': 'Email'
             },
-            settings : {
+            settings: {
                 preventDoubleActive: 1,
                 linkLabels: 1,
                 linkTemplate: 'https://jira.com/browse/{label}',
@@ -183,7 +183,7 @@
 
                     if (data.label == '' || data.time == '') {
                         self.message('invalid');
-                    } else if ($('.item .label:contains(' + data.label.toUpperCase() + ')').length) {
+                    } else if ($('.item .label:contains(' + self.formatLabel(data.label) + ')').length) {
                         self.message('"' + data.label + '"' + ' already exists');
                         //TODO: Add time to the update input for the item having the same label, focus the input
                     } else {
