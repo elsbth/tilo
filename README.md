@@ -18,6 +18,8 @@
 
 ## ToDo:
 
+- Copy/paste of a long Jira issue key should transform to the shorter version
+- Change tab index of linked Jira issue keys. Place first, so tabbing the time inputs is easier
 - Hover item changes background or something
 - Smaller favicons should only include the o✓
 - Preliminary total time: If there is an active item, show the total if ended at current time
