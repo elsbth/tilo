@@ -73,6 +73,7 @@
         .active:after { content: ''; position: absolute; right: -12px; border: 5px solid transparent; height: 0; width: 0; border-left-color: inherit; border-left-width: 7px; top: 7px; border-right-width: 0; }
         .prev { color: #777; word-spacing: 5px; }
         .input--uppercase { text-transform: uppercase; }
+        .input--raw-data { width: 400px; min-height: 240px; font-family: Menlo, 'Courier New', monospace; line-height: 1.3; }
         .total-amount { font-size: 18px; font-weight: bold; margin: 0 10px 0 7px; }
         .total-amount-logged { font-size: 18px; }
         .logo--big { border-bottom: 1px solid var(--color-tilo); display: block; margin: 100px auto 40px; }
@@ -110,17 +111,28 @@
             <button type="submit">Add</button></form>
     
         <p><button type="button" id="clear">Clear</button></p>
-        <p><button type="button" id="toggle">Toggle</button></p>
+        <p>
+            <button type="button" id="toggle">Toggle</button>
+            <button type="button" id="toggle-raw-data">raw-data</button>
+        </p>
     </div>
 
-    <div class="to-do js-toggle">
-        <h2>Settings:</h2>
-        <ul class="settings">
-            <li><code>preventDoubleActive</code> (1/0) - Warning if want to add new active and there already is one active</li>
-            <li><code>linkLabels</code> (1/0) - Link the label to the ticket. Use together with <code>linkTemplate</code> and <code>labelsToLink</code></li>
-            <li><code>linkTemplate</code> (url with placeholder) - URL to the ticket, placeholder <code>{label}</code> for the ticket number</li>
-            <li><code>labelsToLink</code> (oblejct with key: value pairs) - the ticket's project identifier. Key could be an abbreviation, but is the one used for the label in tilo. Value should be the correct project identifier, it's used for the actual link. </li>
-        </ul>
+    <div class="to-do">
+        <div class="js-raw-data-container" style="display: none;">
+            <h2>Raw data:</h2>
+            <textarea class="js-raw-data input--raw-data"></textarea>
+            <br />
+            <button type="button" id="save-raw-data">Save</button>
+        </div>
+        <div class="js-toggle">
+            <h2>Settings:</h2>
+            <ul class="settings">
+                <li><code>preventDoubleActive</code> (1/0) - Warning if want to add new active and there already is one active</li>
+                <li><code>linkLabels</code> (1/0) - Link the label to the ticket. Use together with <code>linkTemplate</code> and <code>labelsToLink</code></li>
+                <li><code>linkTemplate</code> (url with placeholder) - URL to the ticket, placeholder <code>{label}</code> for the ticket number</li>
+                <li><code>labelsToLink</code> (oblejct with key: value pairs) - the ticket's project identifier. Key could be an abbreviation, but is the one used for the label in tilo. Value should be the correct project identifier, it's used for the actual link. </li>
+            </ul>
+        </div>
     </div>
 </div>
 
@@ -231,6 +243,21 @@
                     $('.js-toggle').toggle();
                     var isVisible = $('.js-toggle').first().is(':visible');
                     localStorage.setItem('tilo-toggle', isVisible);
+                });
+
+                //Populate the input with raw tilo data
+                $('#toggle-raw-data').click(function() {
+                    var $input = $('.js-raw-data');
+                    $input.val(localStorage.getItem('tilo'));
+                    $('.js-raw-data-container').toggle();
+                    $input.val('');
+                });
+
+                //Saw the edited raw data
+                $('#save-raw-data').click(function() {
+                    var $input = $('.js-raw-data');
+                    localStorage.setItem('tilo', $input.val());
+                    location.reload();
                 });
             },
 
