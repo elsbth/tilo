@@ -381,10 +381,20 @@
                 return this.$activeItem.find('.active:not(:empty)').length;
             },
 
+            formatLabel: function(label) {
+                label = label.trim().toUpperCase();
+                if (label.indexOf('-') > 0) {
+                    var labelParts = label.split(/[\s-]+/);
+                    labelParts[0] = this.getLabelToLink(labelParts[0]);
+                    label = labelParts.join('-');
+                }
+                return label;
+            },
+
             addMarkupForNewItem: function(data) {
                 var $newItem = this.$itemsList.find(this.cloneSelector).clone(),
                     $label = $newItem.find('.label'),
-                    formattedLabel = data.label.trim().toUpperCase(),
+                    formattedLabel = this.formatLabel(data.label),
                     count = this.$itemsList.find(this.itemSelector).length,
                     loggedId = 'logged-' + count;
 
@@ -664,7 +674,7 @@
 
             getLinkFromLabel(label) {
                 var labelParts = label.split(/[\s-]+/),
-                    shouldLink = (labelParts[0] in this.settings.labelsToLink && Number.isInteger(parseInt(labelParts[1])) && label.indexOf(labelParts[0] + '-') == 0);
+                    shouldLink = this.inLabelsToLink(labelParts[0]) && Number.isInteger(parseInt(labelParts[1])) && label.indexOf(labelParts[0] + '-') == 0;
 
                 if (shouldLink) {
                     var identifier = this.settings.labelsToLink[labelParts[0]] + '-' + labelParts[1],
@@ -674,7 +684,38 @@
                 }
 
                 return null;
-            },  
+            },
+
+            getLabelToLink(labelData) {
+                if (labelData.indexOf('-') > 0) {
+                    var labelParts = labelData.split(/[\s-]+/);
+                    labelData = labelParts[0];
+                }
+                var label = labelData;
+                if (this.isLabelsToLinkValue(labelData)) {
+                    label = Object.keys(this.settings.labelsToLink).find(key => this.settings.labelsToLink[key] === labelData);
+                }
+
+                return label;
+            },
+
+            inLabelsToLink(labelPart) {
+                var isKey = this.isLabelsToLinkKey(labelPart);
+                var isValue = this.isLabelsToLinkValue(labelPart);
+
+                return isKey || isValue;
+            },
+
+            isLabelsToLinkKey(labelPart) {
+                return labelPart in this.settings.labelsToLink ;
+            },
+
+            isLabelsToLinkValue(labelPart) {
+                if (Object.values(this.settings.labelsToLink).indexOf(labelPart) > -1) {
+                    return true;
+                }
+               return false;
+            },
 
             zerofill: function(number) {
                 return (parseInt(number, 10) < 10) ? '0' + number : number;
